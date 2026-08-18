@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "shell.h"
 
@@ -19,7 +21,7 @@ int main()
         hostname[1023] = '\0';
         gethostname(hostname, 1023);
 
-        
+
         char dir[1024];
         char delimeter[] = " ";
 
@@ -55,7 +57,31 @@ int main()
                         token = strtok(NULL, " ");
                 }
 
-                shellBuiltCheck(args, argc);
+                if (shellBuiltCheck(args, argc) == -1) {
+                        // Test for now
+                        pid_t pid = fork();
+                        if (pid < 0) {
+                                printf("could not fork\n");
+                        }
+                        else if (pid == 0) {
+                                char binaryPath[256] = "/usr/bin/";
+
+                                char *progArgs[argc+1];
+                                for (int i = 0; i < argc; i++)
+                                        progArgs[i] = args[i];
+                                        
+                                progArgs[argc] = NULL;
+
+                                strcat(binaryPath, args[0]);
+                                printf("%s", binaryPath);
+
+                                execv(binaryPath, progArgs);
+                                printf("\n");
+                        }
+                        else {
+                                waitpid(pid, NULL, 0);
+                        }
+                }
 
                 free(input);
         }

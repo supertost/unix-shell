@@ -7,6 +7,8 @@ void shellMessage()
         printf("shell: ");
 }
 
+// Checks if the command entered is a shell type
+// returns 0 for successful shell command execution, -1 if not a shell command, 1 if failed shell command
 int shellBuiltCheck(char *args[], int argc)
 {
         char *command = args[0];
