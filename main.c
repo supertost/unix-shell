@@ -2,12 +2,34 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <pwd.h>
+#include <string.h>
+
+#include "shell.h"
 
 int main()
 {
+        // Get current user
+        unsigned int uid = getuid();
+        struct passwd *p = getpwuid(uid);
+        const char *username = p->pw_name;
+
+        // Get hostname
+        char hostname[1024];
+        hostname[1023] = '\0';
+        gethostname(hostname, 1023);
+
+        
+        char dir[1024];
+        char delimeter[] = " ";
+
         bool exit = false;
         while (!exit) {
-                printf("$ ");
+
+                if (getcwd(dir, sizeof(dir)) != NULL) {
+                        printf("%s@%s:%s ~ $ ", username, hostname, dir);
+                }
+
                 size_t capacity = 0;
                 char *input = NULL;
                 
@@ -23,8 +45,17 @@ int main()
                         input[length-1] = '\0';
                 }
 
-                char *args[]={input,"~",NULL};
-                execvp(args[0],args);
+                char *args[64];
+                int argc = 0;
+
+                char *token = strtok(input, delimeter);
+                while (token != NULL && argc < 63) {
+                        args[argc] = token;
+                        argc++;
+                        token = strtok(NULL, " ");
+                }
+
+                shellBuiltCheck(args, argc);
 
                 free(input);
         }

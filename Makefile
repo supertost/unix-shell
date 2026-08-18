@@ -1,2 +1,4 @@
+files=main.c shell.c
+
 all:
-	clang main.c -o main
+	clang $(files) -o shell
