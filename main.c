@@ -72,7 +72,7 @@ int main()
                                 printf("could not fork\n");
                         }
                         else if (pid == 0) {
-                                char binaryPath[256] = "/usr/bin/";
+                                char *binaryPath = findProgLoc(args[0], &env);
 
                                 char *progArgs[argc+1];
                                 for (int i = 0; i < argc; i++)
@@ -80,11 +80,10 @@ int main()
                                         
                                 progArgs[argc] = NULL;
 
-                                strcat(binaryPath, args[0]);
-                                printf("%s", binaryPath);
-
                                 execv(binaryPath, progArgs);
                                 printf("\n");
+
+                                free(binaryPath);
                         }
                         else {
                                 waitpid(pid, NULL, 0);

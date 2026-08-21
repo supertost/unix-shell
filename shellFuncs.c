@@ -5,11 +5,7 @@
 #include <stdlib.h>
 
 #include "shellFuncs.h"
-
-void shellMessage()
-{
-        printf("shell: ");
-}
+#include "shell.h"
 
 int cd(char *args[], int argc)
 {
@@ -58,7 +54,7 @@ int which(char *args[], int argc, EnvVars *vars)
                                 free(pathCopy);
                                 return 1;
                         }
-                        
+
                         if (access(newPath, X_OK) == 0) {
                                 printf("%s\n", newPath);
                                 found = true;
