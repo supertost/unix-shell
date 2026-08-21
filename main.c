@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 
 #include "shell.h"
+#include "EnvVars.h"
 
 int main()
 {
@@ -21,9 +22,16 @@ int main()
         hostname[1023] = '\0';
         gethostname(hostname, 1023);
 
+        // Set Environment Variables
+        EnvVars env;
+        recEnvVar(&env);
+
 
         char dir[1024];
         char delimeter[] = " ";
+
+        //printf("%s\n", env.path);
+        //printf("%s\n", env.home);
 
         bool exit = false;
         while (!exit) {
@@ -54,10 +62,10 @@ int main()
                 while (token != NULL && argc < 63) {
                         args[argc] = token;
                         argc++;
-                        token = strtok(NULL, " ");
+                        token = strtok(NULL, delimeter);
                 }
 
-                if (shellBuiltCheck(args, argc) == -1) {
+                if (shellBuiltCheck(args, argc, &env) == -1) {
                         // Test for now
                         pid_t pid = fork();
                         if (pid < 0) {

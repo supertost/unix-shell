@@ -1,6 +1,8 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-int shellBuiltCheck(char *args[], int argc);
+#include "EnvVars.h"
+
+int shellBuiltCheck(char *args[], int argc, EnvVars *vars);
 
 #endif

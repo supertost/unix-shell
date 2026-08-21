@@ -1,4 +1,4 @@
-files=main.c shell.c
+files=main.c shell.c shellFuncs.c EnvVars.c
 
 all:
 	clang $(files) -o shell
