@@ -41,11 +41,12 @@ int which(char *args[], int argc, EnvVars *vars)
 {
         for (int i = 1; i < argc; i++) {
                 char *pathCopy = malloc(strlen(vars->path) + 1);
-                if (pathCopy != NULL) {
+                if (pathCopy != NULL)
                         strcpy(pathCopy, vars->path);
-                }
+                else
+                        return 1;
 
-                char *token = strtok(vars->path, ":");
+                char *token = strtok(pathCopy, ":");
                 bool found = false;
                 while (token != NULL) {
                         size_t length = strlen(token) + strlen(args[i]) + 2;
@@ -53,10 +54,15 @@ int which(char *args[], int argc, EnvVars *vars)
                         if (newPath != NULL) {
                                 snprintf(newPath, length, "%s/%s", token, args[i]);
                         }
-
+                        else {
+                                free(pathCopy);
+                                return 1;
+                        }
+                        
                         if (access(newPath, X_OK) == 0) {
                                 printf("%s\n", newPath);
                                 found = true;
+                                free(newPath);
                                 break;
                         }
 
