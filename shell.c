@@ -9,9 +9,26 @@
 
 void shellMessage()
 {
-        printf("shell: ");
+        printf("eds: ");
 }
 
+// Return true if shell built in, false if not shell built in
+bool shellBuiltChck(char *command)
+{
+        if (strcmp(command, "cd") == 0)
+                return true;
+
+        else if (strcmp(command, "echo") == 0)
+                return true;
+
+        else if (strcmp(command, "which") == 0)
+                return true;
+
+        else if (strcmp(command, "type") == 0)
+                return true;
+
+        return false;
+}
 // Checks if the command entered is a shell type
 // returns 0 for successful shell command execution, -1 if not a shell command, 1 if failed shell command
 int shellBuiltCheck(char *args[], int argc, EnvVars *vars)
@@ -27,11 +44,19 @@ int shellBuiltCheck(char *args[], int argc, EnvVars *vars)
         else if (strcmp(command, "which") == 0)
                 return which(args, argc, vars);
 
+        else if (strcmp(command, "type") == 0)
+                return type(args, argc, vars);
+
         return -1;
 }
 
 char *findProgLoc(char *bin, EnvVars *vars)
 {
+        if (vars->path == NULL) {
+                shellMessage();
+                printf("Cannot access $PATH variable\n");
+        }
+
         char *pathCopy = malloc(strlen(vars->path) + 1);
         if (pathCopy != NULL)
                 strcpy(pathCopy, vars->path);
@@ -51,6 +76,7 @@ char *findProgLoc(char *bin, EnvVars *vars)
                 }
                         
                 if (access(newPath, X_OK) == 0) {
+                        free(pathCopy);
                         return newPath;
                 }
 

@@ -5,6 +5,7 @@
 
 void shellMessage();
 
+bool shellBuiltChck(char *command);
 int shellBuiltCheck(char *args[], int argc, EnvVars *vars);
 char *findProgLoc(char *bin, EnvVars *vars);
 
